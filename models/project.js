@@ -1,0 +1,63 @@
+const db = require('../config');
+
+const createProject = (name, callback) => {
+    db.run('INSERT INTO projects (name) VALUES (?)', [name], function (err) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, this.lastID); // Retorna o ID do novo projeto criado
+    });
+};
+
+const getAllProjects = (callback) => {
+    db.all('SELECT * FROM projects', function (err, rows) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, rows);
+    });
+};
+
+const getProjectById = (id, callback) => {
+    db.get('SELECT * FROM projects WHERE id = ?', [id], function (err, row) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, row);
+    });
+};
+
+const updateProject = (id, name, callback) => {
+    db.run(
+        'UPDATE projects SET name = ? WHERE id = ?',
+        [name, id],
+        function (err) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            callback(null);
+        }
+    );
+};
+
+const deleteProject = (id, callback) => {
+    db.run('DELETE FROM projects WHERE id = ?', [id], function (err) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null);
+    });
+};
+
+module.exports = {
+    createProject,
+    getAllProjects,
+    getProjectById,
+    updateProject,
+    deleteProject,
+};
